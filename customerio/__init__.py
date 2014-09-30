@@ -43,14 +43,14 @@ class CustomerIO(object):
         return '%s/customers/%s/events' % (self.url_prefix, customer_id)
 
     def send_request(self, method, query_string, data):
-        data = json.dumps(data, cls=ObjectEncoder)
+        data_string = json.dumps(data, cls=ObjectEncoder)
         http = HTTPSConnection(self.host, self.port)
         basic_auth = base64.encodestring('%s:%s' % (self.site_id, self.api_key)).replace('\n', '')
         headers = {
             'Authorization': 'Basic %s' % basic_auth,
             'Content-Type': 'application/json',
         }
-        http.request(method, query_string, data, headers)
+        http.request(method, query_string, data_string, headers)
         result_status = http.getresponse().status
         if result_status != 200:
             raise CustomerIOException('%s: %s %s' % (result_status, query_string, data_string))
